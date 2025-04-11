@@ -136,7 +136,7 @@ export const FormEditRL310 = () => {
         customConfig
       );
 
-      if (result.status === 201) {
+      if (result.status === 200) {
         toast("Data Berhasil Diperbaharui", {
           position: toast.POSITION.TOP_RIGHT,
         });
