@@ -612,13 +612,13 @@ const FormTambahRL310 = () => {
                         </td>
                         <td>
                           <input
-                            type="text"
+                            type="number"
+                            min="0"
                             name="rm_diterima_puskesmas"
                             className="form-control"
                             value={value.rm_diterima_puskesmas}
                             onChange={(e) => changeHandler(e, index)}
                             disabled={value.disabledInput}
-                            min={0}
                             onPaste={preventPasteNegative}
                             onKeyPress={preventMinus}
                             onFocus={handleFocus}
@@ -626,13 +626,13 @@ const FormTambahRL310 = () => {
                         </td>
                         <td>
                           <input
-                            type="text"
+                            type="number"
+                            min="0"
                             name="rm_diterima_rs"
                             className="form-control"
                             value={value.rm_diterima_rs}
                             onChange={(e) => changeHandler(e, index)}
                             disabled={value.disabledInput}
-                            min={0}
                             onPaste={preventPasteNegative}
                             onKeyPress={preventMinus}
                             onFocus={handleFocus}
@@ -640,13 +640,13 @@ const FormTambahRL310 = () => {
                         </td>
                         <td>
                           <input
-                            type="text"
+                            type="number"
+                            min="0"
                             name="rm_diterima_faskes_lain"
                             className="form-control"
                             value={value.rm_diterima_faskes_lain}
                             onChange={(e) => changeHandler(e, index)}
                             disabled={value.disabledInput}
-                            min={0}
                             onPaste={preventPasteNegative}
                             onKeyPress={preventMinus}
                             onFocus={handleFocus}
@@ -654,12 +654,12 @@ const FormTambahRL310 = () => {
                         </td>
                         <td>
                           <input
-                            type="text"
+                            type="number"
+                            min="0"
                             name="rm_diterima_total_rm"
                             className="form-control"
                             value={value.rm_diterima_total_rm}
-                            readOnly={true}
-                            min={0}
+                            disabled={true}
                             onPaste={preventPasteNegative}
                             onKeyPress={preventMinus}
                             onFocus={handleFocus}
@@ -667,13 +667,13 @@ const FormTambahRL310 = () => {
                         </td>
                         <td>
                           <input
-                            type="text"
+                            type="number"
+                            min="0"
                             name="rm_dikembalikan_puskesmas"
                             className="form-control"
                             value={value.rm_dikembalikan_puskesmas}
                             onChange={(e) => changeHandler(e, index)}
                             disabled={value.disabledInput}
-                            min={0}
                             onPaste={preventPasteNegative}
                             onKeyPress={preventMinus}
                             onFocus={handleFocus}
@@ -681,13 +681,13 @@ const FormTambahRL310 = () => {
                         </td>
                         <td>
                           <input
-                            type="text"
+                            type="number"
+                            min="0"
                             name="rm_dikembalikan_rs"
                             className="form-control"
                             value={value.rm_dikembalikan_rs}
                             onChange={(e) => changeHandler(e, index)}
                             disabled={value.disabledInput}
-                            min={0}
                             onPaste={preventPasteNegative}
                             onKeyPress={preventMinus}
                             onFocus={handleFocus}
@@ -695,13 +695,13 @@ const FormTambahRL310 = () => {
                         </td>
                         <td>
                           <input
-                            type="text"
+                            type="number"
+                            min="0"
                             name="rm_dikembalikan_faskes_lain"
                             className="form-control"
                             value={value.rm_dikembalikan_faskes_lain}
                             onChange={(e) => changeHandler(e, index)}
                             disabled={value.disabledInput}
-                            min={0}
                             onPaste={preventPasteNegative}
                             onKeyPress={preventMinus}
                             onFocus={handleFocus}
@@ -709,12 +709,12 @@ const FormTambahRL310 = () => {
                         </td>
                         <td>
                           <input
-                            type="text"
+                            type="number"
+                            min="0"
                             name="rm_dikembalikan_total_rm"
                             className="form-control"
                             value={value.rm_dikembalikan_total_rm}
-                            readOnly={true}
-                            min={0}
+                            disabled={true}
                             onPaste={preventPasteNegative}
                             onKeyPress={preventMinus}
                             onFocus={handleFocus}
@@ -722,13 +722,13 @@ const FormTambahRL310 = () => {
                         </td>
                         <td>
                           <input
-                            type="text"
+                            type="number"
+                            min="0"
                             name="keluar_pasien_rujukan"
                             className="form-control"
                             value={value.keluar_pasien_rujukan}
                             onChange={(e) => changeHandler(e, index)}
                             disabled={value.disabledInput}
-                            min={0}
                             onPaste={preventPasteNegative}
                             onKeyPress={preventMinus}
                             onFocus={handleFocus}
@@ -736,13 +736,13 @@ const FormTambahRL310 = () => {
                         </td>
                         <td>
                           <input
-                            type="text"
+                            type="number"
+                            min="0"
                             name="keluar_pasien_datang_sendiri"
                             className="form-control"
                             value={value.keluar_pasien_datang_sendiri}
                             onChange={(e) => changeHandler(e, index)}
                             disabled={value.disabledInput}
-                            min={0}
                             onPaste={preventPasteNegative}
                             onKeyPress={preventMinus}
                             onFocus={handleFocus}
@@ -750,12 +750,12 @@ const FormTambahRL310 = () => {
                         </td>
                         <td>
                           <input
-                            type="text"
+                            type="number"
+                            min="0"
                             name="keluar_total_keluar"
                             className="form-control"
                             value={value.keluar_total_keluar}
-                            readOnly={true}
-                            min={0}
+                            disabled={true}
                             onPaste={preventPasteNegative}
                             onKeyPress={preventMinus}
                             onFocus={handleFocus}
@@ -763,13 +763,13 @@ const FormTambahRL310 = () => {
                         </td>
                         <td>
                           <input
-                            type="text"
+                            type="number"
+                            min="0"
                             name="keluar_diterima_kembali"
                             className="form-control"
                             value={value.keluar_diterima_kembali}
                             onChange={(e) => changeHandler(e, index)}
                             disabled={value.disabledInput}
-                            min={0}
                             onPaste={preventPasteNegative}
                             onKeyPress={preventMinus}
                             onFocus={handleFocus}
