@@ -901,8 +901,8 @@ const FormTambahRL33 = () => {
                             className="form-control"
                             value={value.tlp_dirawat}
                             // onChange={(e) => changeHandler(e, index)}
-                            // disabled={value.disabledInput}
-                            readOnly={true}
+                            disabled={true}
+                            // readOnly={true}
                           />
                         </td>
                         <td>
