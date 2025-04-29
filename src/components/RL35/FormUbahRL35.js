@@ -15,6 +15,7 @@ export const FormUbahRL35 = () => {
   // const [bulan, setBulan] = useState('')
   // const [jenisKegiatan, setJeniskegiatan] = useState('')
   // const [dataRL, setDataRL] = useState([])
+  const [kategori, setKategori] = useState("");
   const [namaRS, setNamaRS] = useState("");
   const [alamatRS, setAlamatRS] = useState("");
   const [namaPropinsi, setNamaPropinsi] = useState("");
@@ -172,6 +173,10 @@ export const FormUbahRL35 = () => {
     e.preventDefault();
     setSpinner(true);
     setButtonStatus(true);
+    if (kategori===66 || kategori==='66'){
+      let x = total_kunjungan/4
+      setTotalKunjungan (parseInt(x))
+    }
     try {
       const customConfig = {
         headers: {
@@ -236,6 +241,7 @@ export const FormUbahRL35 = () => {
     );
     setTotalKunjungan(response.data.data.total_kunjungan);
     setTahun(response.data.data.tahun);
+    setKategori(response.data.data.jenis_kegiatan_id)
 
     if (tahun.substring(5, 7) === "01") {
       // setBulan('Januari')
