@@ -179,7 +179,10 @@ const NavigationBar = () => {
               </NavDropdown.Item>
             </NavDropdown>
             <NavDropdown title="RL.5" id="basic-nav-dropdown">
-              <NavDropdown.Item as={Link} to="/rl51">
+              {/* <NavDropdown.Item as={Link} to="/rl51">
+                RL 5.1 Mobiditas Pasien Rawat Jalan
+              </NavDropdown.Item> */}
+              <NavDropdown.Item as={Link} to="/MENURL51">
                 RL 5.1 Mobiditas Pasien Rawat Jalan
               </NavDropdown.Item>
               <NavDropdown.Item as={Link} to="/rl52">

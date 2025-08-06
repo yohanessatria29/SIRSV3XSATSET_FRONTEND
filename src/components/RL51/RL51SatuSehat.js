@@ -13,8 +13,8 @@ import Table from "react-bootstrap/Table";
 import { DownloadTableExcel } from "react-export-table-to-excel";
 import { useCSRFTokenContext } from "../Context/CSRFTokenContext";
 
-const RL51 = () => {
-  const [bulan, setBulan] = useState(1);
+const RL51SATUSEHAT = () => {
+  const [bulan, setBulan] = useState("01");
   const [tahun, setTahun] = useState("2025");
   const [daftarBulan, setDaftarBulan] = useState([]);
   const [filterLabel, setFilterLabel] = useState([]);
@@ -35,15 +35,6 @@ const RL51 = () => {
   useEffect(() => {
     refreshToken();
     getBulan();
-    // const getLastYear = async () => {
-    //   const date = new Date();
-    //   setTahun(date.getFullYear());
-    //   return date.getFullYear();
-    //   // setTahun(date.getFullYear() - 1);
-    //   // return date.getFullYear() - 1;
-    // };
-    // getLastYear().then((results) => {});
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const refreshToken = async () => {
@@ -93,39 +84,39 @@ const RL51 = () => {
     const results = [];
     results.push({
       key: "Januari",
-      value: "1",
+      value: "01",
     });
     results.push({
       key: "Febuari",
-      value: "2",
+      value: "02",
     });
     results.push({
       key: "Maret",
-      value: "3",
+      value: "03",
     });
     results.push({
       key: "April",
-      value: "4",
+      value: "04",
     });
     results.push({
       key: "Mei",
-      value: "5",
+      value: "05",
     });
     results.push({
       key: "Juni",
-      value: "6",
+      value: "06",
     });
     results.push({
       key: "Juli",
-      value: "7",
+      value: "07",
     });
     results.push({
       key: "Agustus",
-      value: "8",
+      value: "08",
     });
     results.push({
       key: "September",
-      value: "9",
+      value: "09",
     });
     results.push({
       key: "Oktober",
@@ -143,7 +134,7 @@ const RL51 = () => {
     setDaftarBulan([...results]);
   };
 
-  const bulanChangeHandler = async (e) => {
+  const bulanChangeHandler = (e) => {
     setBulan(e.target.value);
   };
 
@@ -216,14 +207,12 @@ const RL51 = () => {
         },
       };
       const results = await axiosJWT.get(
-        "/apisirs6v2/rllimatitiksatu",
+        "/apisirs6v2/rllimatitiksatusatusehat",
         customConfig
       );
-
       const rlLimaTitikSatuDetails = results.data.data.map((value) => {
         return value;
       });
-
       setNamaFile(
         "RL51_" +
           rumahSakit.id +
@@ -233,48 +222,12 @@ const RL51 = () => {
       setRumahSakit(null);
       handleClose();
     } catch (error) {
-      console.log(error);
-    }
-  };
+      const detailMessage =
+        error.response?.data?.detail || error.message || "Terjadi kesalahan";
 
-  const deleteRL = async (id) => {
-    const customConfig = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-        "XSRF-TOKEN": CSRFToken,
-      },
-    };
-    try {
-      await axiosJWT.delete(`/apisirs6v2/rllimatitiksatu/${id}`, customConfig);
-      toast("Data Berhasil Dihapus", {
-        position: toast.POSITION.TOP_RIGHT,
-      });
-      setDataRL((current) => current.filter((value) => value.id !== id));
-    } catch (error) {
-      console.log(error);
-      toast("Data Gagal Disimpan", {
-        position: toast.POSITION.TOP_RIGHT,
-      });
+      // tampilkan toast dengan pesan detail
+      toast.error(detailMessage);
     }
-  };
-
-  const deleteConfirmation = (id) => {
-    confirmAlert({
-      title: "",
-      message: "Yakin data yang dipilih akan dihapus? ",
-      buttons: [
-        {
-          label: "Yes",
-          onClick: () => {
-            deleteRL(id);
-          },
-        },
-        {
-          label: "No",
-        },
-      ],
-    });
   };
 
   const handleClose = () => setShow(false);
@@ -535,7 +488,9 @@ const RL51 = () => {
                 typeof="select"
                 className="form-control"
                 onChange={bulanChangeHandler}
+                required
               >
+                <option value="">Pilih Bulan</option>
                 {daftarBulan.map((bulan) => {
                   return (
                     <option
@@ -597,19 +552,6 @@ const RL51 = () => {
                   }}
                 >
                   ← Back
-                </Link>
-
-                <Link
-                  className="btn"
-                  to={`/rl51/tambah/`}
-                  style={{
-                    marginRight: "5px",
-                    fontSize: "18px",
-                    backgroundColor: "#779D9E",
-                    color: "#FFFFFF",
-                  }}
-                >
-                  +
                 </Link>
               </>
             ) : (
@@ -682,13 +624,6 @@ const RL51 = () => {
                     style={{ width: "1%" }}
                   >
                     No.
-                  </th>
-                  <th
-                    className={style["sticky-header-view"]}
-                    rowSpan="3"
-                    style={{ width: "2%" }}
-                  >
-                    Aksi
                   </th>
                   <th
                     className={style["sticky-header-view"]}
@@ -818,45 +753,7 @@ const RL51 = () => {
                       /> */}
                         <p>{index + 1}</p>
                       </td>
-                      <td className={style["sticky-column-view"]}>
-                        <ToastContainer />
-                        {/* <RiDeleteBin5Fill  size={20} onClick={(e) => hapus(value.id)} style={{color: "gray", cursor: "pointer", marginRight: "5px"}} /> */}
-                        {user.jenisUserId === 4 ? (
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "center",
-                            }}
-                          >
-                            <button
-                              className="btn btn-danger"
-                              style={{
-                                margin: "0 5px 0 0",
-                                backgroundColor: "#FF6663",
-                                border: "1px solid #FF6663",
-                              }}
-                              type="button"
-                              onClick={(e) => deleteConfirmation(value.id)}
-                            >
-                              Hapus
-                            </button>
-                            <Link
-                              to={`/rl51/edit/${value.id}`}
-                              className="btn btn-warning"
-                              style={{
-                                margin: "0 5px 0 0",
-                                backgroundColor: "#CFD35E",
-                                border: "1px solid #CFD35E",
-                                color: "#FFFFFF",
-                              }}
-                            >
-                              Ubah
-                            </Link>
-                          </div>
-                        ) : (
-                          <></>
-                        )}
-                      </td>
+
                       <td
                         className={style["sticky-column-view"]}
                         style={{ textAlign: "center", verticalAlign: "middle" }}
@@ -1594,4 +1491,4 @@ const RL51 = () => {
   );
 };
 
-export default RL51;
+export default RL51SATUSEHAT;

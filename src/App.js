@@ -117,6 +117,7 @@ import RL42 from "./components/RL42/RL42.js";
 import RL43 from "./components/RL43/RL43.js";
 
 // RL 5.1
+import MenuRL51 from "./components/RL51/MenuRL51.js";
 import RL51 from "./components/RL51/RL51.js";
 import FormTambahRL51 from "./components/RL51/FormTambahRL51";
 import FormEditRL51 from "./components/RL51/FormUbahRL51";
@@ -132,6 +133,7 @@ import Absensi from "./components/Absensi/absensi.js";
 
 // MAINTENANCE
 import MaintenancePage from "./components/MaintenancePage/MaintenancePage.js";
+import RL51SATUSEHAT from "./components/RL51/RL51SatuSehat.js";
 
 function App() {
   return (
@@ -170,7 +172,6 @@ function App() {
               </>
             }
           />
-
           <Route
             path="/rl31"
             element={
@@ -181,7 +182,6 @@ function App() {
               </>
             }
           />
-
           <Route
             path="/rl32"
             element={
@@ -212,7 +212,6 @@ function App() {
               </>
             }
           />
-
           <Route
             path="/rl33"
             element={
@@ -244,7 +243,6 @@ function App() {
               </>
             }
           />
-
           <Route
             path="/rl34"
             element={
@@ -275,7 +273,6 @@ function App() {
               </>
             }
           />
-
           <Route
             path="/rl35"
             element={
@@ -306,7 +303,6 @@ function App() {
               </>
             }
           />
-
           <Route
             path="/rl36"
             element={
@@ -337,7 +333,6 @@ function App() {
               </>
             }
           />
-
           <Route
             path="/rl37"
             element={
@@ -368,7 +363,6 @@ function App() {
               </>
             }
           />
-
           <Route
             path="/rl38"
             element={
@@ -399,7 +393,6 @@ function App() {
               </>
             }
           />
-
           <Route
             path="/rl39"
             element={
@@ -430,7 +423,6 @@ function App() {
               </>
             }
           />
-
           <Route
             path="/rl310"
             element={
@@ -462,7 +454,6 @@ function App() {
               </>
             }
           />
-
           <Route
             path="/RL311"
             element={
@@ -493,7 +484,6 @@ function App() {
               </>
             }
           />
-
           <Route
             path="/RL312"
             element={
@@ -504,7 +494,6 @@ function App() {
               </>
             }
           />
-
           <Route
             path="/rl312/tambah"
             element={
@@ -515,7 +504,6 @@ function App() {
               </>
             }
           />
-
           <Route
             path="/rl312/edit/:id"
             element={
@@ -526,7 +514,6 @@ function App() {
               </>
             }
           />
-
           <Route
             path="/RL313"
             element={
@@ -537,7 +524,6 @@ function App() {
               </>
             }
           />
-
           <Route
             path="/rl313/tambah"
             element={
@@ -548,7 +534,6 @@ function App() {
               </>
             }
           />
-
           <Route
             path="/rl313/edit/:id"
             element={
@@ -559,7 +544,6 @@ function App() {
               </>
             }
           />
-
           <Route
             path="/RL314"
             element={
@@ -590,7 +574,6 @@ function App() {
               </>
             }
           />
-
           <Route
             path="/rl315"
             element={
@@ -621,7 +604,6 @@ function App() {
               </>
             }
           />
-
           <Route
             path="/RL316"
             element={
@@ -652,7 +634,6 @@ function App() {
               </>
             }
           />
-
           <Route
             path="/rl317"
             element={
@@ -683,7 +664,6 @@ function App() {
               </>
             }
           />
-
           <Route
             path="/rl318"
             element={
@@ -714,7 +694,6 @@ function App() {
               </>
             }
           />
-
           <Route
             path="/rl319"
             element={
@@ -745,7 +724,6 @@ function App() {
               </>
             }
           />
-
           <Route
             path="/rl41"
             element={
@@ -776,7 +754,6 @@ function App() {
               </>
             }
           />
-
           <Route
             path="/rl42"
             element={
@@ -787,7 +764,6 @@ function App() {
               </>
             }
           />
-
           <Route
             path="/rl43"
             element={
@@ -800,11 +776,31 @@ function App() {
           />
 
           <Route
+            path="/MENURL51"
+            element={
+              <>
+                <NavigationBar />
+                <MenuRL51 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
             path="/RL51"
             element={
               <>
                 <NavigationBar />
                 <RL51 />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/RL51SATUSEHAT"
+            element={
+              <>
+                <NavigationBar />
+                <RL51SATUSEHAT />
                 <Footer />
               </>
             }
