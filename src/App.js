@@ -134,6 +134,9 @@ import Absensi from "./components/Absensi/absensi.js";
 // MAINTENANCE
 import MaintenancePage from "./components/MaintenancePage/MaintenancePage.js";
 import RL51SATUSEHAT from "./components/RL51/RL51SatuSehat.js";
+import StatusRegistrasi from "./components/Bridging/StatusRegistrasi.js";
+import DaftarPermohonan from "./components/Bridging/DaftarPermohonan.js";
+import Konfirmasi_Email from "./components/Bridging/KonfirmasiEmail.js";
 
 function App() {
   return (
@@ -148,6 +151,36 @@ function App() {
             element={
               <>
                 <NavigationBar />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/konfirmasiemail/:token"
+            element={
+              <>
+                {/* <NavigationBar /> */}
+                <Konfirmasi_Email />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/StatusRegistrasi"
+            element={
+              <>
+                <NavigationBar />
+                <StatusRegistrasi />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/DaftarPermohonan"
+            element={
+              <>
+                <NavigationBar />
+                <DaftarPermohonan />
                 <Footer />
               </>
             }
