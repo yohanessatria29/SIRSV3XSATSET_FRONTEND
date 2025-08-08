@@ -12,6 +12,7 @@ import Modal from "react-bootstrap/Modal";
 import Table from "react-bootstrap/Table";
 import { DownloadTableExcel } from "react-export-table-to-excel";
 import { useCSRFTokenContext } from "../Context/CSRFTokenContext";
+import LoadingSpinner from "../Login/LoadingSpinner";
 
 const RL51SATUSEHAT = () => {
   const [bulan, setBulan] = useState("01");
@@ -31,6 +32,7 @@ const RL51SATUSEHAT = () => {
   const tableRef = useRef(null);
   const [namafile, setNamaFile] = useState("");
   const { CSRFToken } = useCSRFTokenContext();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     refreshToken();
@@ -195,6 +197,9 @@ const RL51SATUSEHAT = () => {
     filter.push("nama: ".concat(rumahSakit.nama));
     filter.push("periode: ".concat(String(tahun).concat("-").concat(bulan)));
     setFilterLabel(filter);
+    handleClose();
+
+    setLoading(true);
     try {
       const customConfig = {
         headers: {
@@ -210,23 +215,43 @@ const RL51SATUSEHAT = () => {
         "/apisirs6v2/rllimatitiksatusatusehat",
         customConfig
       );
-      const rlLimaTitikSatuDetails = results.data.data.map((value) => {
-        return value;
-      });
-      setNamaFile(
-        "RL51_" +
-          rumahSakit.id +
-          "_".concat(String(tahun).concat("-").concat(bulan).concat("-01"))
+
+      const config2 = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          rsId: rumahSakit.id,
+          periode: String(tahun).concat("-").concat(bulan),
+        },
+      };
+
+      const responseShow = await axiosJWT.get(
+        "/apisirs6v2/rllimatitiksatusatusehatshow",
+        config2
       );
-      setDataRL(rlLimaTitikSatuDetails);
-      setRumahSakit(null);
-      handleClose();
+
+      setDataRL(responseShow.data.data);
+
+      // const rlLimaTitikSatuDetails = results.data.data.map((value) => {
+      //   return value;
+      // });
+      // setNamaFile(
+      //   "RL51_" +
+      //     rumahSakit.id +
+      //     "_".concat(String(tahun).concat("-").concat(bulan).concat("-01"))
+      // );
+      // setDataRL(rlLimaTitikSatuDetails);
+      // setRumahSakit(null);
+      // handleClose();
     } catch (error) {
       const detailMessage =
         error.response?.data?.detail || error.message || "Terjadi kesalahan";
 
       // tampilkan toast dengan pesan detail
       toast.error(detailMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -301,6 +326,134 @@ const RL51SATUSEHAT = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const LoadingTable = ({ data, loading }) => {
+    let no = 0;
+    return (
+      <>
+        <style>{`
+  @keyframes spin {
+    0% { transform: rotate(0deg);}
+    100% { transform: rotate(360deg);}
+  }
+  .spinner {
+    border: 4px solid #ccc;
+    border-top: 4px solid #007bff;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    animation: spin 1s linear infinite;
+  }
+`}</style>
+
+        <div className={`${style["table-container"]} mt-2 mb-1 pb-2 `}>
+          <Table
+            className={style.table}
+            striped
+            bordered
+            responsive
+            style={{ filter: loading ? "none" : "none", width: "100%" }}
+            ref={tableRef}
+          >
+            <thead className={style.thead}>
+              <tr className="main-header-row">
+                <th rowSpan="3" style={{ width: "2%" }}>
+                  No.
+                </th>
+                <th rowSpan="3" style={{ width: "4%" }}>
+                  ICD 10
+                </th>
+                <th rowSpan="3" style={{ width: "5%" }}>
+                  Diagnosis
+                </th>
+                <th rowSpan="3" style={{ width: "10%" }}>
+                  Umur
+                </th>
+                <th colSpan="3" style={{ width: "10%" }}>
+                  Kunjungan Baru
+                </th>
+                <th colSpan="3" style={{ width: "10%" }}>
+                  Total Kunjungan
+                </th>
+              </tr>
+              <tr>
+                <th>Laki - Laki</th>
+                <th>Perempuan</th>
+                <th>Total</th>
+                <th>Laki - Laki</th>
+                <th>Perempuan</th>
+                <th>Total</th>
+              </tr>
+              <tr>
+                {/* Baris ketiga ini bisa dikosongkan atau kamu isi subheader tambahan kalau perlu */}
+              </tr>
+            </thead>
+            <tbody>
+              {dataRL.length === 0 && (
+                <tr>
+                  <td colSpan="10" style={{ textAlign: "center" }}>
+                    Tidak ada data
+                  </td>
+                </tr>
+              )}
+
+              {dataRL.map((rsItem) =>
+                rsItem.age_groups.map((ageGroup) =>
+                  ageGroup.records.map((record) => {
+                    no++; // increment no setiap baris
+                    return (
+                      <tr
+                        key={`${ageGroup.age_id}-${no}`}
+                        style={{ textAlign: "center", verticalAlign: "middle" }}
+                      >
+                        <td>{no}</td> {/* nomor urut global */}
+                        <td>{record.icd_10}</td>
+                        <td>{record.diagnosis}</td>
+                        <td>{ageGroup.age_name}</td>
+                        <td>{record.male_new_cases}</td>
+                        <td>{record.females_new_cases}</td>
+                        <td>{record.total_new_cases}</td>
+                        <td>{record.male_visits}</td>
+                        <td>{record.female_visits}</td>
+                        <td>{record.total_visits}</td>
+                      </tr>
+                    );
+                  })
+                )
+              )}
+            </tbody>
+            {loading && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  backgroundColor: "rgba(255,255,255,0.7)",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  zIndex: 9999,
+                }}
+              >
+                <div className="spinner" />
+                <div
+                  style={{
+                    marginTop: 10,
+                    fontWeight: "bold",
+                    color: "#007bff",
+                  }}
+                >
+                  Mohon Tunggu...
+                </div>
+              </div>
+            )}
+          </Table>
+        </div>
+      </>
+    );
   };
 
   return (
@@ -538,6 +691,9 @@ const RL51SATUSEHAT = () => {
           <span style={{ color: "gray" }}>
             <h4>RL 5.1 - Mobiditas Pasien Rawat Jalan</h4>
           </span>
+          <span style={{ color: "gray" }}>
+            <h5>DATA SATUSEHAT</h5>
+          </span>
           <div style={{ marginBottom: "10px" }}>
             {user.jenisUserId === 4 ? (
               <>
@@ -607,884 +763,8 @@ const RL51SATUSEHAT = () => {
               )}
             </h5>
           </div>
-          <div className={`${style["table-container"]} mt-2 mb-1 pb-2 `}>
-            <table
-              className={style.table}
-              striped
-              bordered
-              responsive
-              style={{ width: "500%" }}
-              ref={tableRef}
-            >
-              <thead className={style.thead}>
-                <tr className="main-header-row">
-                  <th
-                    className={style["sticky-header-view"]}
-                    rowSpan="3"
-                    style={{ width: "1%" }}
-                  >
-                    No.
-                  </th>
-                  <th
-                    className={style["sticky-header-view"]}
-                    rowSpan="3"
-                    style={{ width: "2%" }}
-                  >
-                    Kode ICD 10
-                  </th>
-                  <th
-                    className={style["sticky-header-view"]}
-                    rowSpan="3"
-                    style={{ width: "5%" }}
-                  >
-                    Diagnosis Penyakit
-                  </th>
-                  <th colSpan="50" style={{ width: "70%" }}>
-                    Jumlah Kasus Baru Menurut Kelompok Umur & Jenis Kelamin
-                  </th>
-                  <th colSpan="3" style={{ width: "5%" }}>
-                    Jumlah Kasus Baru Menurut Jenis Kelamin
-                  </th>
-                  <th colSpan="3" style={{ width: "5%" }}>
-                    Jumlah Kunjungan
-                  </th>
-                </tr>
-                <tr>
-                  <th colSpan="2">&lt;1Jam</th>
-                  <th colSpan="2">1 - 23 Jam</th>
-                  <th colSpan="2">1 - 7 Hr</th>
-                  <th colSpan="2">8 - 28 Hr</th>
-                  <th colSpan="2">29 hr - &lt; 3 bln</th>
-                  <th colSpan="2">3 - &lt; 6 bln</th>
-                  <th colSpan="2">6 - 11 bln</th>
-                  <th colSpan="2">1 - 4 th</th>
-                  <th colSpan="2">5 - 9 th</th>
-                  <th colSpan="2">10 - 14 th</th>
-                  <th colSpan="2">15 - 19 th</th>
-                  <th colSpan="2">20 - 24 th</th>
-                  <th colSpan="2">25 - 29 th</th>
-                  <th colSpan="2">30 - 34 th</th>
-                  <th colSpan="2">35 - 39 th</th>
-                  <th colSpan="2">40 - 44 th</th>
-                  <th colSpan="2">45 - 49 th</th>
-                  <th colSpan="2">50 - 54 th</th>
-                  <th colSpan="2">55 - 59 th</th>
-                  <th colSpan="2">60 - 64 th</th>
-                  <th colSpan="2">65 - 69 th</th>
-                  <th colSpan="2">70 - 74 th</th>
-                  <th colSpan="2">75 - 79 th</th>
-                  <th colSpan="2">80 - 84 th</th>
-                  <th colSpan="2">&gt; 85 th</th>
-                  <th rowSpan="2">L</th>
-                  <th rowSpan="2">P</th>
-                  <th rowSpan="2">Total</th>
-                  <th rowSpan="2">L</th>
-                  <th rowSpan="2">P</th>
-                  <th rowSpan="2">Total</th>
-                </tr>
-                <tr>
-                  <th>L</th>
-                  <th>P</th>
-                  <th>L</th>
-                  <th>P</th>
-                  <th>L</th>
-                  <th>P</th>
-                  <th>L</th>
-                  <th>P</th>
-                  <th>L</th>
-                  <th>P</th>
-                  <th>L</th>
-                  <th>P</th>
-                  <th>L</th>
-                  <th>P</th>
-                  <th>L</th>
-                  <th>P</th>
-                  <th>L</th>
-                  <th>P</th>
-                  <th>L</th>
-                  <th>P</th>
-                  <th>L</th>
-                  <th>P</th>
-                  <th>L</th>
-                  <th>P</th>
-                  <th>L</th>
-                  <th>P</th>
-                  <th>L</th>
-                  <th>P</th>
-                  <th>L</th>
-                  <th>P</th>
-                  <th>L</th>
-                  <th>P</th>
-                  <th>L</th>
-                  <th>P</th>
-                  <th>L</th>
-                  <th>P</th>
-                  <th>L</th>
-                  <th>P</th>
-                  <th>L</th>
-                  <th>P</th>
-                  <th>L</th>
-                  <th>P</th>
-                  <th>L</th>
-                  <th>P</th>
-                  <th>L</th>
-                  <th>P</th>
-                  <th>L</th>
-                  <th>P</th>
-                  <th>L</th>
-                  <th>P</th>
-                </tr>
-              </thead>
-              <tbody>
-                {dataRL.map((value, index) => {
-                  return (
-                    <tr key={value.id}>
-                      <td
-                        className={style["sticky-column-view"]}
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        {/* <input
-                        type="text"
-                        name="id"
-                        className="form-control"
-                        value={index + 1}
-                        disabled={true}
-                        style={{ textAlign: "center" }}
-                      /> */}
-                        <p>{index + 1}</p>
-                      </td>
 
-                      <td
-                        className={style["sticky-column-view"]}
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        {/* <input
-                        type="text"
-                        name="codeICD"
-                        className="form-control"
-                        value={value.icd.icd_code}
-                        disabled={true}
-                      /> */}
-                        <p>{value.icd.icd_code}</p>
-                      </td>
-                      <td
-                        className={style["sticky-column-view"]}
-                        style={{ textAlign: "left", verticalAlign: "middle" }}
-                      >
-                        {/* <input
-                        type="text"
-                        name="diagnosisPenyakit"
-                        className="form-control"
-                        value={value.icd.description_code}
-                        disabled={true}
-                      /> */}
-                        <p>{value.icd.description_code}</p>
-                      </td>
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        {/* <input
-                        type="text"
-                        name="jumlah_L_dibawah_1_jam"
-                        className="form-control"
-                        value={value.jumlah_L_dibawah_1_jam}
-                        disabled={true}
-                      /> */}
-                        <p>{value.jumlah_L_dibawah_1_jam}</p>
-                      </td>
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        {/* <input
-                        type="text"
-                        name="jumlah_P_dibawah_1_jam"
-                        className="form-control"
-                        value={value.jumlah_P_dibawah_1_jam}
-                        disabled={true}
-                      /> */}
-                        <p>{value.jumlah_P_dibawah_1_jam}</p>
-                      </td>
-
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        {/* <input
-                        type="text"
-                        name="jumlah_L_1_sampai_23_jam"
-                        className="form-control"
-                        value={value.jumlah_L_1_sampai_23_jam}
-                        disabled={true}
-                      /> */}
-                        <p>{value.jumlah_L_1_sampai_23_jam}</p>
-                      </td>
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        {/* <input
-                        type="text"
-                        name="jumlah_P_1_sampai_23_jam"
-                        className="form-control"
-                        value={value.jumlah_P_1_sampai_23_jam}
-                        disabled={true}
-                      /> */}
-                        <p>{value.jumlah_P_1_sampai_23_jam}</p>
-                      </td>
-
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        {/* <input
-                        type="text"
-                        name="jumlah_L_1_sampai_7_hari"
-                        className="form-control"
-                        value={value.jumlah_L_1_sampai_7_hari}
-                        disabled={true}
-                      /> */}
-                        <p>{value.jumlah_L_1_sampai_7_hari}</p>
-                      </td>
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_P_1_sampai_7_hari}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_P_1_sampai_7_hari"
-                        className="form-control"
-                        value={value.jumlah_P_1_sampai_7_hari}
-                        disabled={true}
-                      /> */}
-                      </td>
-
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_L_8_sampai_28_hari}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_L_8_sampai_28_hari"
-                        className="form-control"
-                        value={value.jumlah_L_8_sampai_28_hari}
-                        disabled={true}
-                      /> */}
-                      </td>
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_P_8_sampai_28_hari}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_P_8_sampai_28_hari"
-                        className="form-control"
-                        value={value.jumlah_P_8_sampai_28_hari}
-                        disabled={true}
-                      /> */}
-                      </td>
-
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_L_29_hari_sampai_dibawah_3_bulan}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_L_29_hari_sampai_dibawah_3_bulan"
-                        className="form-control"
-                        value={value.jumlah_L_29_hari_sampai_dibawah_3_bulan}
-                        disabled={true}
-                      /> */}
-                      </td>
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_P_29_hari_sampai_dibawah_3_bulan}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_P_29_hari_sampai_dibawah_3_bulan"
-                        className="form-control"
-                        value={value.jumlah_P_29_hari_sampai_dibawah_3_bulan}
-                        disabled={true}
-                      /> */}
-                      </td>
-
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_L_3_bulan_sampai_dibawah_6_bulan}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_L_3_bulan_sampai_dibawah_6_bulan"
-                        className="form-control"
-                        value={value.jumlah_L_3_bulan_sampai_dibawah_6_bulan}
-                        disabled={true}
-                      /> */}
-                      </td>
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_P_3_bulan_sampai_dibawah_6_bulan}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_P_3_bulan_sampai_dibawah_6_bulan"
-                        className="form-control"
-                        value={value.jumlah_P_3_bulan_sampai_dibawah_6_bulan}
-                        disabled={true}
-                      /> */}
-                      </td>
-
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_L_6_bulan_sampai_11_bulan}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_L_6_bulan_sampai_11_bulan"
-                        className="form-control"
-                        value={value.jumlah_L_6_bulan_sampai_11_bulan}
-                        disabled={true}
-                      /> */}
-                      </td>
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_P_6_bulan_sampai_11_bulan}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_P_6_bulan_sampai_11_bulan"
-                        className="form-control"
-                        value={value.jumlah_P_6_bulan_sampai_11_bulan}
-                        disabled={true}
-                      /> */}
-                      </td>
-
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_L_1_sampai_4_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_L_1_sampai_4_tahun"
-                        className="form-control"
-                        value={value.jumlah_L_1_sampai_4_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_P_1_sampai_4_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_P_1_sampai_4_tahun"
-                        className="form-control"
-                        value={value.jumlah_P_1_sampai_4_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_L_5_sampai_9_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_L_5_sampai_9_tahun"
-                        className="form-control"
-                        value={value.jumlah_L_5_sampai_9_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_P_5_sampai_9_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_P_5_sampai_9_tahun"
-                        className="form-control"
-                        value={value.jumlah_P_5_sampai_9_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_L_10_sampai_14_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_L_10_sampai_14_tahun"
-                        className="form-control"
-                        value={value.jumlah_L_10_sampai_14_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_P_10_sampai_14_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_P_10_sampai_14_tahun"
-                        className="form-control"
-                        value={value.jumlah_P_10_sampai_14_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_L_15_sampai_19_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_L_15_sampai_19_tahun"
-                        className="form-control"
-                        value={value.jumlah_L_15_sampai_19_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_P_15_sampai_19_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_P_15_sampai_19_tahun"
-                        className="form-control"
-                        value={value.jumlah_P_15_sampai_19_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_L_20_sampai_24_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_L_20_sampai_24_tahun"
-                        className="form-control"
-                        value={value.jumlah_L_20_sampai_24_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_P_20_sampai_24_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_P_20_sampai_24_tahun"
-                        className="form-control"
-                        value={value.jumlah_P_20_sampai_24_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_L_25_sampai_29_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_L_25_sampai_29_tahun"
-                        className="form-control"
-                        value={value.jumlah_L_25_sampai_29_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_P_25_sampai_29_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_P_25_sampai_29_tahun"
-                        className="form-control"
-                        value={value.jumlah_P_25_sampai_29_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_L_30_sampai_34_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_L_30_sampai_34_tahun"
-                        className="form-control"
-                        value={value.jumlah_L_30_sampai_34_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_P_30_sampai_34_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_P_30_sampai_34_tahun"
-                        className="form-control"
-                        value={value.jumlah_P_30_sampai_34_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_L_35_sampai_39_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_L_35_sampai_39_tahun"
-                        className="form-control"
-                        value={value.jumlah_L_35_sampai_39_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_P_35_sampai_39_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_P_35_sampai_39_tahun"
-                        className="form-control"
-                        value={value.jumlah_P_35_sampai_39_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_L_40_sampai_44_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_L_40_sampai_44_tahun"
-                        className="form-control"
-                        value={value.jumlah_L_40_sampai_44_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_P_40_sampai_44_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_P_40_sampai_44_tahun"
-                        className="form-control"
-                        value={value.jumlah_P_40_sampai_44_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_L_45_sampai_49_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_L_45_sampai_49_tahun"
-                        className="form-control"
-                        value={value.jumlah_L_45_sampai_49_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_P_45_sampai_49_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_P_45_sampai_49_tahun"
-                        className="form-control"
-                        value={value.jumlah_P_45_sampai_49_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_L_50_sampai_54_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_L_50_sampai_54_tahun"
-                        className="form-control"
-                        value={value.jumlah_L_50_sampai_54_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_P_50_sampai_54_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_P_50_sampai_54_tahun"
-                        className="form-control"
-                        value={value.jumlah_P_50_sampai_54_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_L_55_sampai_59_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_L_55_sampai_59_tahun"
-                        className="form-control"
-                        value={value.jumlah_L_55_sampai_59_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_P_55_sampai_59_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_P_55_sampai_59_tahun"
-                        className="form-control"
-                        value={value.jumlah_P_55_sampai_59_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_L_60_sampai_64_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_L_60_sampai_64_tahun"
-                        className="form-control"
-                        value={value.jumlah_L_60_sampai_64_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_P_60_sampai_64_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_P_60_sampai_64_tahun"
-                        className="form-control"
-                        value={value.jumlah_P_60_sampai_64_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_L_65_sampai_69_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_L_65_sampai_69_tahun"
-                        className="form-control"
-                        value={value.jumlah_L_65_sampai_69_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_P_65_sampai_69_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_P_65_sampai_69_tahun"
-                        className="form-control"
-                        value={value.jumlah_P_65_sampai_69_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_L_70_sampai_74_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_L_70_sampai_74_tahun"
-                        className="form-control"
-                        value={value.jumlah_L_70_sampai_74_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_P_70_sampai_74_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_P_70_sampai_74_tahun"
-                        className="form-control"
-                        value={value.jumlah_P_70_sampai_74_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_L_75_sampai_79_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_L_75_sampai_79_tahun"
-                        className="form-control"
-                        value={value.jumlah_L_75_sampai_79_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_P_75_sampai_79_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_P_75_sampai_79_tahun"
-                        className="form-control"
-                        value={value.jumlah_P_75_sampai_79_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_L_80_sampai_84_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_L_80_sampai_84_tahun"
-                        className="form-control"
-                        value={value.jumlah_L_80_sampai_84_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_P_80_sampai_84_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_P_80_sampai_84_tahun"
-                        className="form-control"
-                        value={value.jumlah_P_80_sampai_84_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_L_diatas_85_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_L_diatas_85_tahun"
-                        className="form-control"
-                        value={value.jumlah_L_diatas_85_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_P_diatas_85_tahun}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_P_diatas_85_tahun"
-                        className="form-control"
-                        value={value.jumlah_P_diatas_85_tahun}
-                        disabled={true}
-                      /> */}
-                      </td>
-
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_kasus_baru_L}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_kasus_baru_L"
-                        className="form-control"
-                        value={value.jumlah_kasus_baru_L}
-                        disabled={true}
-                      /> */}
-                      </td>
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_kasus_baru_P}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_kasus_baru_P"
-                        className="form-control"
-                        value={value.jumlah_kasus_baru_P}
-                        disabled={true}
-                      /> */}
-                      </td>
-
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.total_kasus_baru}</p>
-                        {/* <input
-                        type="text"
-                        name="total_kasus_baru"
-                        className="form-control"
-                        value={value.total_kasus_baru}
-                        disabled={true}
-                      /> */}
-                      </td>
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_kunjungan_L}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_kunjungan_L"
-                        className="form-control"
-                        value={value.jumlah_kunjungan_L}
-                        disabled={true}
-                      /> */}
-                      </td>
-
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.jumlah_kunjungan_P}</p>
-                        {/* <input
-                        type="text"
-                        name="jumlah_kunjungan_P"
-                        className="form-control"
-                        value={value.jumlah_kunjungan_P}
-                        disabled={true}
-                      /> */}
-                      </td>
-                      <td
-                        style={{ textAlign: "center", verticalAlign: "middle" }}
-                      >
-                        <p>{value.total_jumlah_kunjungan}</p>
-                        {/* <input
-                        type="text"
-                        name="total_jumlah_kunjungan"
-                        className="form-control"
-                        value={value.total_jumlah_kunjungan}
-                        disabled={true}
-                      /> */}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          <LoadingTable data={dataRL} loading={loading} />
         </div>
       </div>
     </div>
