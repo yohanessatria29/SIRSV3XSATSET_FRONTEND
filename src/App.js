@@ -137,6 +137,7 @@ import RL51SATUSEHAT from "./components/RL51/RL51SatuSehat.js";
 import StatusRegistrasi from "./components/Bridging/StatusRegistrasi.js";
 import DaftarPermohonan from "./components/Bridging/DaftarPermohonan.js";
 import Konfirmasi_Email from "./components/Bridging/KonfirmasiEmail.js";
+import Bridging from "./components/Bridging/RegistrasiUser.js";
 
 function App() {
   return (
@@ -161,6 +162,16 @@ function App() {
               <>
                 {/* <NavigationBar /> */}
                 <Konfirmasi_Email />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/RegistrasiUser"
+            element={
+              <>
+                <NavigationBar />
+                <Bridging />
                 <Footer />
               </>
             }
