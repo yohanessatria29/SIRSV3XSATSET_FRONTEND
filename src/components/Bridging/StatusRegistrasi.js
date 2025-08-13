@@ -95,7 +95,7 @@ const StatusRegistrasi = () => {
           Authorization: `Bearer ${token}`,
         },
         params: {
-          rsId: kodeRs,
+          rsId: e,
         },
       };
 
