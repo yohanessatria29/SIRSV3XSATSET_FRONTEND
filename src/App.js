@@ -144,7 +144,7 @@ import VerifBerhasil from "./components/Bridging/VerifBerhasil.js";
 function App() {
   return (
     <CSRFTokenProvider>
-      <MemoryRouter initialEntries={["/beranda"]}>
+      <MemoryRouter initialEntries={["/"]}>
         <Routes>
           <Route path="/" element={<SSO_Login />} />
           <Route path="/verif" element={<SSO_Verif />} />
@@ -164,25 +164,6 @@ function App() {
               <>
                 {/* <NavigationBar /> */}
                 <Konfirmasi_Email />
-                <Footer />
-              </>
-            }
-          />
-                    <Route
-            path="/verifikasiberhasil"
-            element={
-              <>
-                {/* <NavigationBar /> */}
-                <VerifBerhasil />
-                <Footer />
-              </>
-            }
-          />
-          <Route
-            path="/verifikasigagal"
-            element={
-              <>
-                <VerifGagal />
                 <Footer />
               </>
             }
