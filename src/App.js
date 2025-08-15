@@ -138,11 +138,13 @@ import StatusRegistrasi from "./components/Bridging/StatusRegistrasi.js";
 import DaftarPermohonan from "./components/Bridging/DaftarPermohonan.js";
 import Konfirmasi_Email from "./components/Bridging/KonfirmasiEmail.js";
 import Bridging from "./components/Bridging/RegistrasiUser.js";
+import VerifGagal from "./components/Bridging/VerifGagal.js";
+import VerifBerhasil from "./components/Bridging/VerifBerhasil.js";
 
 function App() {
   return (
     <CSRFTokenProvider>
-      <MemoryRouter initialEntries={["/beranda"]}>
+      <MemoryRouter initialEntries={["/", , "/konfirmasiemail/:token"]}>
         <Routes>
           <Route path="/" element={<SSO_Login />} />
           <Route path="/verif" element={<SSO_Verif />} />
