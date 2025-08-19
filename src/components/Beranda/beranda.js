@@ -24,6 +24,9 @@ const Beranda = () => {
     const getSubdomain = segments[segments.length - 2] || "";
     const dynamicParam = segments[segments.length - 1] || "";
 
+    console.log("tararara ", getSubdomain)
+    console.log("dididi ", dynamicParam)
+
     if (getSubdomain === "konfirmasiemail" && dynamicParam) {
       checkToken(dynamicParam);
     } else {
