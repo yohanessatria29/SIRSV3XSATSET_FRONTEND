@@ -225,7 +225,7 @@ const StatusRegistrasi = () => {
           <ActionButtonDisabled label="Permohonan Gagal Verifikasi Email Kadaluarsa" disabled />
         </div>
       );
-    }else if (value.status_verifikasi === "terverifikasi" && value.status_pendaftaran === "tunda") {
+    } else if (value.status_verifikasi === "terverifikasi" && value.status_pendaftaran === "tunda") {
 
       return (
         <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
