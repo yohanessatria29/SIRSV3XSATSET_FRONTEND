@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { confirmAlert } from "react-confirm-alert"; // Pastikan kamu mengimpor confirmAlert
+import { confirmAlert } from "react-confirm-alert"; 
 
 const Beranda = () => {
   const [title, setTitle] = useState("Verifikasi Email Berhasil");
@@ -30,7 +30,7 @@ const Beranda = () => {
     if (getSubdomain === "konfirmasiemail" && dynamicParam) {
       checkToken(dynamicParam);
     } else {
-      // Kalau bukan konfirmasiemail, tidak tampilkan apa-apa
+      
       setLoading(false); 
     }
   }, []);
@@ -41,7 +41,7 @@ const Beranda = () => {
         `/apisirs6v2/apiregistration/verifikasiemail/${param}`
       );
 
-      // Tentukan warna dan konten berdasarkan status
+
       if (results.status === 201) {
         const okTitle = "Verifikasi Email Berhasil";
         const okMsg =
@@ -49,7 +49,7 @@ const Beranda = () => {
 
         setTitle(okTitle);
         setContain(okMsg);
-        showAlert(okTitle, okMsg, "#4CAF50");  // Hijau (Success)
+        showAlert(okTitle, okMsg, "#4CAF50");  
       } else {
         const failTitle = "Verifikasi Email Gagal";
         const failMsg =
@@ -57,7 +57,7 @@ const Beranda = () => {
 
         setTitle(failTitle);
         setContain(failMsg);
-        showAlert(failTitle, failMsg, "#F44336");  // Merah (Error)
+        showAlert(failTitle, failMsg, "#F44336");
       }
     } catch (error) {
       const apiMsg =
@@ -67,7 +67,7 @@ const Beranda = () => {
       setTitle("Verifikasi Email Gagal");
       setContain(apiMsg);
       toast(apiMsg, { position: toast.POSITION.TOP_RIGHT });
-      showAlert("Verifikasi Email Gagal", apiMsg, "#F44336");  // Merah (Error)
+      showAlert("Verifikasi Email Gagal", apiMsg, "#F44336");  
     } finally {
       setLoading(false);
     }
