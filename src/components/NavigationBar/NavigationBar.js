@@ -198,39 +198,38 @@ const NavigationBar = () => {
               </NavDropdown.Item>
             </NavDropdown>
 
-            {(user.jenisUserId === 99 || user.jenis_user_id === 99) || (user.jenisUserId === 4 || user.jenis_user_id === 4) ? (
-            <>
-            <NavDropdown title="Bridging" id="basic-nav-dropdown">
-              {user.jenisUserId === 99 || user.jenis_user_id === 99 ? (
-                <>
-                  <NavDropdown.Item as={Link} to="/DaftarPermohonan">
-                    Daftar Permohonan API SIRS Online
-                  </NavDropdown.Item>
-                </>
-              ) : (
-                <>
-
-                  {/* <NavDropdown.Item as={Link} to="/RegistrasiUser">
+            {user.jenisUserId === 99 ||
+            user.jenis_user_id === 99 ||
+            user.jenisUserId === 4 ||
+            user.jenis_user_id === 4 ? (
+              <>
+                <NavDropdown title="Bridging" id="basic-nav-dropdown">
+                  {user.jenisUserId === 99 || user.jenis_user_id === 99 ? (
+                    <>
+                      <NavDropdown.Item as={Link} to="/DaftarPermohonan">
+                        Daftar Permohonan API SIRS Online
+                      </NavDropdown.Item>
+                    </>
+                  ) : (
+                    <>
+                      {/* <NavDropdown.Item as={Link} to="/RegistrasiUser">
                     Registrasi Akun
                   </NavDropdown.Item> */}
-                  <NavDropdown.Item as={Link} to="/StatusRegistrasi">
-                   Registrasi Bridging
-                  </NavDropdown.Item>
-                  <NavDropdown.Item as={Link} to="/PermohonanProduction">
+                      <NavDropdown.Item as={Link} to="/StatusRegistrasi">
+                        Registrasi Bridging
+                      </NavDropdown.Item>
+                      {/* <NavDropdown.Item as={Link} to="/PermohonanProduction">
                     Permohonan Akses Integrasi Server <i>Production</i>
-                  </NavDropdown.Item>
-                </>
-              )}
-            </NavDropdown>
-            </>
-            ):(
+                  </NavDropdown.Item> */}
+                    </>
+                  )}
+                </NavDropdown>
+              </>
+            ) : (
               <></>
             )}
-
           </Nav>
         </Navbar.Collapse>
-
-        
 
         <Navbar.Collapse className="justify-content-end">
           <Navbar.Text>

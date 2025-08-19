@@ -1,8 +1,8 @@
 {
-  "name": "frontend",
-  "version": "0.1.0",
+  "name": "SIRSXSATSET",
+  "version": "0.1.5",
   "private": true,
-  "homepage": "/v3",
+  "homepage": "/sirs",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
