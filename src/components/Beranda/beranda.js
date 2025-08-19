@@ -16,7 +16,6 @@ const Beranda = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("HAIIII")
     const segments = window.location.pathname.split("/").filter(Boolean);
     const getSubdomain = segments[segments.length - 2] || "";
     const dynamicParam = segments[segments.length - 1] || "";

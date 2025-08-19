@@ -140,6 +140,7 @@ import Konfirmasi_Email from "./components/Bridging/KonfirmasiEmail.js";
 import Bridging from "./components/Bridging/RegistrasiUser.js";
 import VerifGagal from "./components/Bridging/VerifGagal.js";
 import VerifBerhasil from "./components/Bridging/VerifBerhasil.js";
+import Beranda from "./components/Beranda/beranda.js";
 
 function App() {
   return (
@@ -154,6 +155,7 @@ function App() {
             element={
               <>
                 <NavigationBar />
+                <Beranda />
                 <Footer />
               </>
             }
