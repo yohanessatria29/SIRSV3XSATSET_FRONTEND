@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+// import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { confirmAlert } from "react-confirm-alert"; // Pastikan kamu mengimpor confirmAlert
 
@@ -15,7 +15,11 @@ const Beranda = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  const hasRunRef = useRef(false);
   useEffect(() => {
+    if (hasRunRef.current) return;
+    hasRunRef.current = true;
+
     const segments = window.location.pathname.split("/").filter(Boolean);
     const getSubdomain = segments[segments.length - 2] || "";
     const dynamicParam = segments[segments.length - 1] || "";
@@ -59,7 +63,7 @@ const Beranda = () => {
 
       setTitle("Verifikasi Email Gagal");
       setContain(apiMsg);
-      toast(apiMsg, { position: toast.POSITION.TOP_RIGHT });
+      // toast(apiMsg, { position: toast.POSITION.TOP_RIGHT });
       showAlert("Verifikasi Email Gagal", apiMsg, "#F44336");  // Merah (Error)
     } finally {
       setLoading(false);
@@ -69,18 +73,23 @@ const Beranda = () => {
   const showAlert = (alertTitle, alertMessage, titleColor) => {
     confirmAlert({
       customUI: ({ onClose }) => (
-        <div style={styles.customDialog}>
-          <h2 style={{ ...styles.dialogTitle, color: titleColor }}>
-            {alertTitle}
-          </h2>
-          <p style={styles.dialogMessage}>{alertMessage}</p>
-          <div style={styles.dialogFooter}>
-            <button
-              onClick={onClose}
-              style={styles.dialogButton}
-            >
-              Tutup
-            </button>
+        <div style={styles.overlay}>
+          <div style={styles.customDialog}>
+            <h2 style={{ ...styles.dialogTitle, color: titleColor }}>
+              {alertTitle}
+            </h2>
+            <p style={styles.dialogMessage}>{alertMessage}</p>
+            <div style={styles.dialogFooter}>
+              <button
+                onClick={() => {
+                  window.open("/", "_blank"); // Membuka URL '/' di tab baru
+                  onClose(); // Menutup dialog setelah membuka tab baru
+                }}
+                style={styles.dialogButton}
+              >
+                Tutup
+              </button>
+            </div>
           </div>
         </div>
       ),
@@ -88,6 +97,18 @@ const Beranda = () => {
   };
 
   const styles = {
+    overlay: {
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      backgroundColor: "rgba(0, 0, 0, 0.7)", // Gelap transparan di belakang
+      zIndex: 9999, // Pastikan overlay berada di atas konten lainnya
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+    },
     customDialog: {
       padding: "20px",
       borderRadius: "8px",
@@ -96,14 +117,13 @@ const Beranda = () => {
       textAlign: "center",
       width: "400px",
       maxWidth: "100%",
-      margin: "0 auto",
     },
     dialogTitle: {
-      fontSize: "24px",
+      fontSize: "32px",
       fontWeight: "bold",
     },
     dialogMessage: {
-      fontSize: "18px",
+      fontSize: "24px",
       color: "#555",
     },
     dialogFooter: {
@@ -113,9 +133,9 @@ const Beranda = () => {
       padding: "10px 20px",
       fontSize: "16px",
       color: "#fff",
-      backgroundColor: "#4CAF50",
+      backgroundColor: "black",
       border: "none",
-      borderRadius: "5px",
+      borderRadius: "4px",
       cursor: "pointer",
     },
   };
