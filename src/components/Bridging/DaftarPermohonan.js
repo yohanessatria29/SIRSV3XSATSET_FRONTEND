@@ -157,6 +157,7 @@ const DaftarPermohonan = () => {
           {statConf !== "Menerima" && (
             <div>
               <label htmlFor="catatan">Masukkan Catatan :</label>
+              <ToastContainer />
               <input
                 type="text"
                 id="catatan"
