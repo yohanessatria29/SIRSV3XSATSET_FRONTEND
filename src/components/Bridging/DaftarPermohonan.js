@@ -226,9 +226,10 @@ const DaftarPermohonan = () => {
           toast("Data Berhasil DiReview", {
             position: toast.POSITION.TOP_RIGHT,
           });
+          setTimeout(() => {
+            navigate("/");
+          }, 1000);
         } else {
-
-          console.log("hiyaahhhh2 ", id)
           await axiosJWT.post(
             "/apisirs6v2/apiproductionrequest/review/" + id.apiReqProdId,
             {
@@ -244,6 +245,9 @@ const DaftarPermohonan = () => {
           toast("Data Berhasil DiReview", {
             position: toast.POSITION.TOP_RIGHT,
           });
+          setTimeout(() => {
+            navigate("/");
+          }, 1000);
         }
       } catch (error) {
         console.log(error);
