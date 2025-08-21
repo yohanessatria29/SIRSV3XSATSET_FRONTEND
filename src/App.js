@@ -134,11 +134,18 @@ import Absensi from "./components/Absensi/absensi.js";
 // MAINTENANCE
 import MaintenancePage from "./components/MaintenancePage/MaintenancePage.js";
 import RL51SATUSEHAT from "./components/RL51/RL51SatuSehat.js";
+import StatusRegistrasi from "./components/Bridging/StatusRegistrasi.js";
+import DaftarPermohonan from "./components/Bridging/DaftarPermohonan.js";
+import Konfirmasi_Email from "./components/Bridging/KonfirmasiEmail.js";
+import Bridging from "./components/Bridging/RegistrasiUser.js";
+import VerifGagal from "./components/Bridging/VerifGagal.js";
+import VerifBerhasil from "./components/Bridging/VerifBerhasil.js";
+import Beranda from "./components/Beranda/beranda.js";
 
 function App() {
   return (
     <CSRFTokenProvider>
-      <MemoryRouter initialEntries={["/beranda"]}>
+      <MemoryRouter initialEntries={["/"]}>
         <Routes>
           <Route path="/" element={<SSO_Login />} />
           <Route path="/verif" element={<SSO_Verif />} />
@@ -148,6 +155,49 @@ function App() {
             element={
               <>
                 <NavigationBar />
+                <Beranda />
+                <Footer />
+              </>
+            }
+          />
+          
+          <Route
+            path="/konfirmasiemail/:token"
+            element={
+              <>
+               <BrowserRouter>
+                <Konfirmasi_Email />
+                <Footer />
+                </BrowserRouter>
+              </>
+            }
+          />
+          <Route
+            path="/RegistrasiUser"
+            element={
+              <>
+                <NavigationBar />
+                <Bridging />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/StatusRegistrasi"
+            element={
+              <>
+                <NavigationBar />
+                <StatusRegistrasi />
+                <Footer />
+              </>
+            }
+          />
+          <Route
+            path="/DaftarPermohonan"
+            element={
+              <>
+                <NavigationBar />
+                <DaftarPermohonan />
                 <Footer />
               </>
             }
